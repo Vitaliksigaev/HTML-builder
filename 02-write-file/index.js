@@ -10,20 +10,29 @@ fs.writeFile(
     }
 );
 
-const { stdin, stdout } = process;
+const { stdin, stdout, exit } = process;
 
-stdout.write('Введите информацию\n')
+stdout.write('Введите информацию\n');
+
 stdin.on('data', data => {
-const name = data.toString();
+    const name = data.toString();
 
-fs.appendFile(
-    path.join(__dirname, 'text.txt'),
-    name,
-    err => {
-        if (err) throw err;
-        console.log('Файл был изменен');
+    fs.appendFile(
+        path.join(__dirname, 'text.txt'),
+        name,
+        err => {
+            if (err) throw err;
+            console.log('Файл был изменен');
         }
     );
+    if (data.toString().trim() === 'exit') {
+        stdout.write('До свидания!');
+        exit();
+      }
     // process.exit();
+    process.on('SIGINT', () => {
+        stdout.write('До свидания!');
+        exit();
+      })
 });
 
